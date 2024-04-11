@@ -1,57 +1,32 @@
-// MeteoViewModel.kt
-package com.example.weatherapp.ui
-
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewModelScope
 import com.example.appmeteo.ui.theme.MeteoUiState
+import com.example.appmeteo.Network.WeatherApiService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
 
 class MeteoViewModel : ViewModel() {
+
     // L'état de l'interface utilisateur (UI State)
-    private val _uiState = MutableStateFlow(MeteoUiState())
-    val uiState: StateFlow<MeteoUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(Meteo("", 0.0, "", ""))
+    val uiState: StateFlow<Meteo> = _uiState.asStateFlow()
 
-    private var _ville = mutableStateOf("")
-    private var _temperature = mutableStateOf(0.0)
-    private var _description = mutableStateOf("")
+    private var _nomMeteo = MutableStateFlow("")
 
-    // Fonction pour mettre à jour la ville
-    fun updateVille(ville: String) {
-        _ville.value = ville
+    fun updateNomMeteo(nom:String) {
+        _nomMeteo.value = nom
     }
-
-    // Fonction pour mettre à jour la température
-    fun updateTemperature(temperature: Double) {
-        _temperature.value = temperature
+    fun getNomMeteo(): String {
+        return _nomMeteo.value
     }
 
-    // Fonction pour mettre à jour la description
-    fun updateDescription(description: String) {
-        _description.value = description
+    //action
+    fun afficher(){
+        val retrofit: Retrofit = Retrofit.Builder().baseUrl("https://api.openweathermap.org/data/2.5/weather")
+            .addConverterFactory(GsonConverterFactory.create()).build()
+        val service :
     }
-
-    fun getVille() : String{
-        return _ville.value
-    }
-    fun getTemperature() : Double{
-        return _temperature.value
-    }
-    fun getDescription() : String{
-        return _description.value
-    }
-
-    fun resetVille(){
-        _ville.value = "";
-    }
-    fun resetTemperature(){
-        _temperature.value = 0.0;
-    }
-    fun resetDescription(){
-        _description.value = "";
-    }
-
 }
